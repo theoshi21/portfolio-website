@@ -1,9 +1,7 @@
 name: Deploy to AWS
-
 on:
   push:
     branches: [main]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,19 +13,12 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AKIASM4B6XZUZHCUNHPL }}
-          aws-secret-access-key: ${{ secrets.sF2e/ZGFbhSsb49FSB0jrjae2kAqrvj74TFf3ZuU }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       
       - name: Sync files to S3
-        run: |
-          aws s3 sync . s3://${{ secrets.novadarstar06-portfolio-2025  }} \
-            --delete \
-            --exclude ".git/*" \
-            --exclude ".github/*"
+        run: aws s3 sync ./portfolio-website s3://${{ secrets.S3_BUCKET_NAME }} --delete --exclude ".git/*" --exclude ".github/*"
       
       - name: Invalidate CloudFront cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.E1QOVX4QT5TJ57 }} \
-            --paths "/*"
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
